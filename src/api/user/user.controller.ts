@@ -5,9 +5,15 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
+  @Post('/signup')
   public async SignUp (@Body() userData): Promise<object> {
     return this.userService.Signup(userData);
   }
+
+  @Post('/login')
+  public async login(@Body() loginData): Promise<object> {
+    return this.userService.login(loginData);
+  }
+
 
 }

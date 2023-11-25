@@ -28,12 +28,12 @@ import { BeforeInsert,BeforeUpdate,Column,Entity,JoinTable,ManyToMany,OneToMany,
     @JoinTable({
       name: 'user_space',
       joinColumn: {
-        name: 'userIdx',
-        referencedColumnName: 'userIdx',
+        name: 'userId',
+        referencedColumnName: 'userId',
       },
       inverseJoinColumn: {
-        name: 'spaceIdx',
-        referencedColumnName: 'spaceIdx',
+        name: 'spaceId',
+        referencedColumnName: 'spaceId',
       },
     })
     spaces: Space[];

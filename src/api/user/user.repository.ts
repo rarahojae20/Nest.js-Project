@@ -20,4 +20,11 @@ export class UserRepository extends Repository<User> {
       return user;
     }
   
+    async login(email: string, password: string): Promise<User | undefined> {
+      const user = await this.findOne({
+        where: { email: email, password: password},
+        select: ['email', 'password', 'lastName' ,'firstName'],
+      })
+      return user;
+    }
   }
