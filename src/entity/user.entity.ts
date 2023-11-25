@@ -1,4 +1,4 @@
-import { BeforeInsert,BeforeUpdate,Column,Entity,JoinTable,ManyToMany,OneToMany,PrimaryGeneratedColumn} from 'typeorm';
+import { BeforeInsert,BeforeUpdate,Column,CreateDateColumn,DeleteDateColumn,Entity,JoinTable,ManyToMany,OneToMany,PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm';
   import * as bcrypt from 'bcrypt';
   import { InternalServerErrorException } from '@nestjs/common';
   import { Space } from './space.entity';
@@ -20,6 +20,15 @@ import { BeforeInsert,BeforeUpdate,Column,Entity,JoinTable,ManyToMany,OneToMany,
   
     @Column({ type: 'varchar', length: 10 })
     lastName: string; //이름
+
+    @CreateDateColumn({ type: 'timestamp' })
+    createdAt: Date;
+  
+    @UpdateDateColumn({ type: 'timestamp' })
+    updatedAt: Date;
+  
+    @DeleteDateColumn({ type: 'timestamp' })
+    deletedAt: Date | null;  
     
     @OneToMany(() => Space, (space) => space.owner, { nullable: true })
     ownSpaces: Space[];

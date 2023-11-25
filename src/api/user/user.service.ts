@@ -40,13 +40,10 @@ export class UserService {
             if (!user) {
                 return { success: false, message: '해당 이메일을 가진 사용자를 찾을 수 없습니다.' };
             }
-
             const isPasswordValid = await this.comparePassword(password, user.password);
-
             if (!isPasswordValid) {
                 return { success: false, message: '비밀번호가 일치하지 않습니다.' };
             }
-
             const token = this.generateToken(user);
             return {
               success: true,

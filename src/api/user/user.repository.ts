@@ -15,7 +15,7 @@ export class UserRepository extends Repository<User> {
     const user = await this.findOne({
         where: { email: email },
         withDeleted: true,
-        select: ['email', 'password',],
+        select: ['userId', 'email', 'password',],
       });
       return user;
     }
@@ -27,4 +27,8 @@ export class UserRepository extends Repository<User> {
       })
       return user;
     }
+
+  
   }
+
+  

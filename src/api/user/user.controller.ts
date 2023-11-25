@@ -15,5 +15,4 @@ export class UserController {
     return this.userService.login(loginData);
   }
 
-
 }

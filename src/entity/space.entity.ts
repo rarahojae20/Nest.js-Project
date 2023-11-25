@@ -1,3 +1,4 @@
+import { Post } from '@nestjs/common';
 import { User } from './user.entity';
 import {
   Column,
@@ -6,9 +7,10 @@ import {
   Entity,
   ManyToMany,
   ManyToOne,
-  OneToMany,
+  JoinTable,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 // import { Post } from './post.entity';
 
@@ -34,6 +36,6 @@ export class Space {
 
   @ManyToMany(() => User, (user) => user.spaces)
   users: User[];
-
-
+  
 }
+
