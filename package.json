@@ -4,7 +4,7 @@
   "main": "./app.ts",
   "scripts": {
     "start": "npm run serve",
-    "serve": "cross-env NODE_ENV=env nodemon --exec ts-node -r tsconfig-paths/register --files ./src/app.ts",
+    "serve": "cross-env NODE_ENV=dev nodemon --exec ts-node -r tsconfig-paths/register --files ./src/app.ts",
     "test": "cross-env NODE_ENV=test TS_NODE_FILES=true mocha --exit -timeout 3000 -r tsconfig-paths/register -r ts-node/register ./test/*.test.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -34,6 +34,8 @@
     "bcryptjs": "^2.4.3",
     "builder-pattern": "^2.2.0",
     "chai-http": "^4.4.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.0",
     "cls-rtracer": "^2.6.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.4",

@@ -28,7 +28,20 @@ export class UserRepository extends Repository<User> {
       return user;
     }
 
-  
-  }
+    async getUser(userId: number, requestUserId?: number): Promise<User | undefined> { // 후에 토큰 헤더로부터 id 정보 가져옴
+      const selectColumns: (keyof User)[] = ['firstName', 'lastName'];
+      
+      if (requestUserId && requestUserId !== userId) {
+        selectColumns.push('email');
+      }
+    
+      const user = await this.findOne({
+        where: { userId: userId },
+        select: selectColumns,
+      });
 
-  
+      return user;
+    }
+
+
+  }    
