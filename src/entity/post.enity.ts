@@ -1,25 +1,29 @@
-import { Post } from './post.enity';
 import { User } from './user.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  ManyToMany,
   ManyToOne,
-  JoinTable,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  OneToMany,
 } from 'typeorm';
+import { Space } from './space.entity';
 
 @Entity()
-export class Space {
+export class Post {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
-  spaceId: number;
+  postIdx: number;
 
   @Column({ type: 'varchar', length: 50 })
-  name: string;
+  title: string;
+
+  @Column({ type: 'varchar', length: 1000 })
+  content: string;
+
+  @Column({ type: 'enum', enum: ['Notice', 'Question'] })
+  category: string;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
@@ -30,15 +34,10 @@ export class Space {
   @DeleteDateColumn({ type: 'timestamp' })
   deletedAt: Date | null;
 
-  @ManyToOne(() => User, (user) => user.ownSpaces, { onDelete: 'SET NULL' })
-  owner: User;
+  @ManyToOne(() => User, (user) => user.posts, { onDelete: 'SET NULL' })
+  writer: User;
 
-  @ManyToMany(() => User, (user) => user.spaces)
-  users: User[];
+  @ManyToOne(() => Space, (space) => space.posts, { onDelete: 'SET NULL' })
+  space: Space;
 
-  @OneToMany(() => Post, (post) => post.space, { onDelete: 'SET NULL' })
-  posts: Post[];
-
-  
 }
-

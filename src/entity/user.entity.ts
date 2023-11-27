@@ -2,6 +2,7 @@ import { BeforeInsert,BeforeUpdate,Column,CreateDateColumn,DeleteDateColumn,Enti
   import * as bcrypt from 'bcrypt';
   import { InternalServerErrorException } from '@nestjs/common';
   import { Space } from './space.entity';
+import { Post } from './post.enity';
 
   @Entity()
   export class User {  //이메일, 성, 이름, 프로필
@@ -32,6 +33,10 @@ import { BeforeInsert,BeforeUpdate,Column,CreateDateColumn,DeleteDateColumn,Enti
     
     @OneToMany(() => Space, (space) => space.owner, { nullable: true })
     ownSpaces: Space[];
+
+    @OneToMany(() => Post, (post) => post.writer, { nullable: true })
+    posts: Post[];
+  
     
     @ManyToMany(() => Space, (space) => space.users)
     @JoinTable({
@@ -56,3 +61,5 @@ import { BeforeInsert,BeforeUpdate,Column,CreateDateColumn,DeleteDateColumn,Enti
         return bcrypt.compare(password, this.password);
       };
   }
+
+  

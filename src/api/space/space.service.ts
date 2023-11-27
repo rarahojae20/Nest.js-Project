@@ -21,7 +21,7 @@ export class SpaceService {
         throw new HttpException(
         {
           success: false,
-          message: '접근권한 없음.',
+          message: '접근권한 없음',
         },
         HttpStatus.NOT_FOUND,
       );
@@ -66,5 +66,23 @@ export class SpaceService {
       }),
     };
   }
+
+  async findMember(
+    spaceIdx: number,
+  ): Promise<{ ownerId: number; members: number[] }> {
+    const result = await this.spaceRepository.findMember(spaceIdx);
+    if (result.length == 0)
+      throw new HttpException(
+        {
+          success: false,
+          message: '공간을 찾을 수 없습니다.',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    const rt: number[] = [];
+    result.map((user) => rt.push(user.userIdx));
+    return { ownerId: result[0].ownerIdx, members: rt };
+  }
+
 
 }

@@ -19,5 +19,15 @@ export class SpaceRepository extends Repository<Space> {
     
         return result;
       }
+      async findMember(spaceIdx: number): Promise<any[]> {
+        const result = await this.createQueryBuilder('space')
+          .where('space.spaceIdx = :spaceIdx', { spaceIdx: `${spaceIdx}` })
+          .leftJoin('space.users', 'users')
+          .leftJoin('space.owner', 'owner')
+          .select(['users.userIdx as userIdx', 'owner.userIdx as ownerIdx'])
+          .getRawMany();
+        return result;
+      }
+    
     
 }
