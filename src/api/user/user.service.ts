@@ -13,25 +13,23 @@ export class UserService {
   ) {}
 
   async Signup(userData): Promise<object> {
-    await this.checkEmail(userData.email);
-    const result = await this.userRepository.Signup(userData);
-    return result
-    ? {success: true, message: '회원가입에 성공' }
-    : { success: false, message: '회원가입에 실패' };
-}    
+    try {
+      const result = await this.userRepository.save(userData);
+      return result
+        ? { success: true, message: '회원가입에 성공' }
+        : { success: false, message: '회원가입에 실패' };
+    } catch (error) {
+      throw new HttpException(
+        {
+          success: false,
+          message: '중복! 다른 이메일을 사용 해주세요.',
+        },
+        HttpStatus.FORBIDDEN
+      );
+    }
+  }
 
-async checkEmail(email: string): Promise<object> {
-const checkResult = await this.userRepository.checkEmail(email);
-if (checkResult)
-  throw new HttpException(
-    {
-      success: false,
-      message: '중복! 다른 이메일을 사용 해주세요.',
-    },
-    HttpStatus.FORBIDDEN
-  );
-return { success: true, message: '이메일 사용 가능' };
-}   
+
 
   async login(loginData): Promise<object> {
     try {

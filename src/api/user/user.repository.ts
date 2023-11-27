@@ -4,7 +4,7 @@ import { EntityRepository, Repository } from 'typeorm';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
-  
+
     async Signup(userData): Promise<any> {
     const user = this.create(userData);
     const result = await this.save(user);
