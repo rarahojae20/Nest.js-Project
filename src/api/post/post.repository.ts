@@ -1,9 +1,6 @@
 import { Post } from '../../entity/post.enity';
 import { EntityRepository, Repository } from 'typeorm';
 
-function parseColumn(column: Array<string>, prefix: string) {
-  return column.map((col) => prefix + col);
-}
 
 @EntityRepository(Post)
 export class PostRepository extends Repository<Post> {
