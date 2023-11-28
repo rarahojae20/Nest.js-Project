@@ -1,8 +1,6 @@
 
 실행 : npm start
 
-
-
 ------------------------
 
 POST /users/sugnup 회원가입
@@ -11,17 +9,46 @@ POST /users/login 로그인
 
 GET /users/:userId 유저별 조회
 
+PATCH	/users/:userId 유저 수정
+
+DELETE	/users/:userId 유저 삭제 API
+
+PATCH	/users/:userId/restore 유저 복구
+
+
 ------------------------
 
 POST /spaces 공간 생성
+
+GET	/spaces?keyword=	전체 공간 조회
 
 POST /spaces/join 공간 연결
 
 GET  /spaces 공간 조회
 
+GET	/spaces/:spaceId 특정 공간 조회
+
+PATCH	/sapces/:sapceId 공간 수정
+
+DELETE	/sapces/:sapceId 공간 삭제
+
+PATCH	/sapces/:sapceId/restore 공간 복구
+
+
+
 ------------------------
 
-POST /posts 게시물 생성
+POST	/posts	게시글 생성 API
+
+GET	/posts?spaceId=&keyword=	게시글 조회
+
+GET	/posts/:postId	특정 게시글 조회 
+
+PATCH	/posts/:postId	게시물 수정 
+
+DELETE	/posts/:postId	게시물 삭제 
+
+PATCH	/posts/:postId/restore 게시물 복구
 
 ------------------------
 
