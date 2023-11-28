@@ -14,7 +14,6 @@ export class PostRepository extends Repository<Post> {
           .leftJoin('post.writer', 'writer')
           .leftJoin('post.space', 'space')
           .where('space.spaceId = :spaceId', { spaceId: spaceId })
-          .andWhere('post.title like :keyword', { keyword: `%${keyword}%` })
           .select([
             'post.postId as postId',
             'post.title as title',
