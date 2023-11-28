@@ -53,8 +53,8 @@ import { Post } from './post.enity';
     spaces: Space[];
 
     public hashPassword = async(password: string)=> {
-          const hashedPassword = await bcrypt.hash(this.password, 10);
-          this.password = hashedPassword;
+          const hashedPassword = await bcrypt.hash(password, 10);
+        return hashedPassword
         }
 
     public checkPassword = async (password: string): Promise<boolean> => {
