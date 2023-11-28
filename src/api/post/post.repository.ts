@@ -60,10 +60,6 @@ export class PostRepository extends Repository<Post> {
       async selectPostDetail(postId: number): Promise<Post> {
         const result = await this.createQueryBuilder('post')
           .leftJoin('post.writer', 'postWriter')
-          .leftJoin('post.chats', 'chat', 'chat.parent IS NULL')
-          .leftJoin('chat.writer', 'chatWriter')
-          .leftJoin('chat.rechat', 'rechat')
-          .leftJoin('rechat.writer', 'rechatWriter')
           .where('post.postId = :postId', { postId: `${postId}` })
           .select([
             ...parseColumn(
@@ -74,19 +70,7 @@ export class PostRepository extends Repository<Post> {
               ['userId', 'email', 'firstName', 'lastName'],
               'postWriter.',
             ),
-            ...parseColumn(['chatId', 'content', 'createdAt'], 'chat.'),
-            ...parseColumn(['chatId', 'content', 'createdAt'], 'rechat.'),
-            ...parseColumn(
-              ['userId', 'firstName', 'lastName'],
-              'chatWriter.',
-            ),
-            ...parseColumn(
-              ['userId', 'firstName', 'lastName'],
-              'rechatWriter.',
-            ),
           ])
-          .orderBy('chat.createdAt', 'DESC')
-          .addOrderBy('rechat.createdAt', 'DESC')
           .getOne();
         return result;
       }
