@@ -1,6 +1,7 @@
-import {Controller, Post, Body, Get, UseGuards, Param} from '@nestjs/common'
+import {Controller, Post, Body, Get, UseGuards, Param, Patch, ParseIntPipe, HttpException, HttpStatus, Delete} from '@nestjs/common'
 import { UserService } from './user.service';
 import { JwtAuthGuard } from './auth/auth.jwt.guard';
+import { User } from './user.decorator';
 
 
 
@@ -20,11 +21,61 @@ export class UserController {
     
   @UseGuards(JwtAuthGuard)
   @Get('/:userId')
-  public async getUser(@Param() userId): Promise<object> {
+  public async getUser(@Param('userId',ParseIntPipe) userId): Promise<object> {
     return this.userService.getUser(userId);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Patch('/:userId')
+  patchUser(
+    @User() user: { userId: number },
+    @Param('userId',ParseIntPipe) userId: number,
+    @Body() updateUserData
+  ) {
+    if (user.userId != userId)
+      throw new HttpException(
+        {
+          success: false,
+          message: '접근할 수 없습니다.',
+        },
+        HttpStatus.FORBIDDEN,
+      );
+    return this.userService.updateUser(userId, updateUserData);
+  }
 
+  @UseGuards(JwtAuthGuard)
+  @Patch('/:userId/restore')
+  restoreUser(
+    @User() user: { userId: number },
+    @Param('userId',ParseIntPipe) userId: number,
+  ) {
+    if (user.userId != userId)
+      throw new HttpException(
+        {
+          success: false,
+          message: '접근할 수 없습니다.',
+        },
+        HttpStatus.FORBIDDEN,
+      );
+    return this.userService.restoreUser(userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('/:userId')
+  deleteUser(
+    @User() user: { userId: number },
+    @Param('userId', ParseIntPipe) userId: number,
+  ) {
+    if (user.userId != userId)
+      throw new HttpException(
+        {
+          success: false,
+          message: '접근할 수 없습니다.',
+        },
+        HttpStatus.FORBIDDEN,
+      );
+    return this.userService.deleteUser(userId);
+  }
 }
 
 

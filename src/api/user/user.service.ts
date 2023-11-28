@@ -12,29 +12,81 @@ export class UserService {
     private jwtService: JwtService,
   ) {}
 
-  async Signup(userData): Promise<object> {
-    try {
-      const result = await this.userRepository.save(userData);
-      return result
-        ? { success: true, message: '회원가입에 성공' }
-        : { success: false, message: '회원가입에 실패' };
-    } catch (error) {
+  async Signup(createUserData): Promise<object> {
+    await this.checkEmail(createUserData.email);
+    const result = await this.userRepository.createUser(createUserData);
+    return result
+      ? { success: true, message: '회원가입에 성공했습니다.' }
+      : { success: false, message: '회원가입에 실패했습니다.' };
+  }
+
+  async checkEmail(email: string): Promise<object> {
+    const checkResult = await this.userRepository.selectUserByEmail(email);
+    if (checkResult)
       throw new HttpException(
         {
           success: false,
-          message: '중복! 다른 이메일을 사용 해주세요.',
+          message: '이미 존재하는 이메일입니다.',
         },
-        HttpStatus.FORBIDDEN
+        HttpStatus.FORBIDDEN,
       );
-    }
+    else return { success: true, message: '사용가능한 이메일입니다.' };
   }
+
+  async readUserProfile(userId: number): Promise<object> {
+    const userInfo = await this.userRepository.selectUserInfo(userId);
+    if (!userInfo)
+      throw new HttpException(
+        {
+          success: false,
+          message: '회원정보를 찾을 수 없습니다.',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    return {
+      success: true,
+      message: '회원정보가 조회되었습니다.',
+      result: userInfo,
+    };
+  }
+
+  async updateUser(userId: number, user ): Promise<object> {
+    const updateResult = await this.userRepository.updateUser(userId, user);
+    return {
+      success: true,
+      message: '회원정보가 수정되었습니다.',
+      result: updateResult,
+    };
+  }
+
+  async restoreUser(userId: number): Promise<object> {
+    const restoreResult = await this.userRepository.restore({
+      userId: userId,
+    });
+    if (restoreResult.affected == 0)
+      throw new HttpException(
+        {
+          success: false,
+          message: '회원정보를 찾을 수 없습니다.',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    else return { success: true, message: '계정이 복구되었습니다.' };
+  }
+
+  async deleteUser(userId: number): Promise<object> {
+    const deleteResult = await this.userRepository.deleteUser(userId);
+    
+    return { success: true, message: '회원 탈퇴되었습니다.', result: deleteResult };
+  }
+
 
 
 
   async login(loginData): Promise<object> {
     try {
       const { email, password } = loginData;
-      const user = await this.userRepository.findOne({ where: { email } });
+      const user = await this.userRepository.selectUserByEmail( email);
 
       if (!user) {
         throw new UnauthorizedException('해당 이메일을 가진 사용자를 찾을 수 없습니다.');
