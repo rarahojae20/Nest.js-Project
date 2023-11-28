@@ -7,6 +7,9 @@ import { UserRepository } from '../user/user.repository';
 
 @Injectable()
 export class SpaceService {
+  readSpaceDetail(spaceId: number): object | PromiseLike<object> {
+    throw new Error('Method not implemented.');
+  }
   constructor(
     @InjectRepository(SpaceRepository) private spaceRepository: SpaceRepository,
     private userRepository: UserRepository,
@@ -68,9 +71,9 @@ export class SpaceService {
   }
 
   async findMember(
-    spaceIdx: number,
+    spaceId: number,
   ): Promise<{ ownerId: number; members: number[] }> {
-    const result = await this.spaceRepository.findMember(spaceIdx);
+    const result = await this.spaceRepository.findMember(spaceId);
     if (result.length == 0)
       throw new HttpException(
         {
@@ -80,9 +83,59 @@ export class SpaceService {
         HttpStatus.NOT_FOUND,
       );
     const rt: number[] = [];
-    result.map((user) => rt.push(user.userIdx));
-    return { ownerId: result[0].ownerIdx, members: rt };
+    result.map((user) => rt.push(user.userId));
+    return { ownerId: result[0].ownerId, members: rt };
   }
+
+
+  async findOwnerId(spaceId: number): Promise<number> {
+    return await this.spaceRepository.selectOwnerId(spaceId);
+  }
+
+  async updateSpace(spaceId: number, space): Promise<object> {
+    const updateResult = await this.spaceRepository.update(spaceId, space);
+    if (updateResult.affected == 0)
+      throw new HttpException(
+        {
+          success: false,
+          message: '공간을 찾을 수 없습니다.',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    return {
+      success: true,
+      message: '공간정보가 수정되었습니다.',
+    };
+  }
+
+  async restoreSpace(spaceId: number): Promise<object> {
+    const restoreResult = await this.spaceRepository.restore({
+      spaceId: spaceId,
+    });
+    if (restoreResult.affected == 0)
+      throw new HttpException(
+        {
+          success: false,
+          message: '공간을 찾을 수 없습니다.',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    else return { success: true, message: '공간이 복구되었습니다.' };
+  }
+
+  async deleteSpace(spaceId: number): Promise<object> {
+    const deleteResult = await this.spaceRepository.softDelete({ spaceId });
+    if (deleteResult.affected == 0)
+      throw new HttpException(
+        {
+          success: false,
+          message: '공간을 찾을 수 없습니다.',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    else return { success: true, message: '공간이 삭제되었습니다.' };
+  }
+
 
 
 }

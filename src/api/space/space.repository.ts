@@ -19,15 +19,33 @@ export class SpaceRepository extends Repository<Space> {
     
         return result;
       }
-      async findMember(spaceIdx: number): Promise<any[]> {
+      async findMember(spaceId: number): Promise<any[]> {
         const result = await this.createQueryBuilder('space')
-          .where('space.spaceIdx = :spaceIdx', { spaceIdx: `${spaceIdx}` })
+          .where('space.spaceId = :spaceId', { spaceId: `${spaceId}` })
           .leftJoin('space.users', 'users')
           .leftJoin('space.owner', 'owner')
-          .select(['users.userIdx as userIdx', 'owner.userIdx as ownerIdx'])
+          .select(['users.userId as userId', 'owner.userId as ownerId'])
           .getRawMany();
         return result;
       }
     
+      async selectOwnerId(spaceId: number): Promise<number> {
+        const result = await this.createQueryBuilder('space')
+          .where('space.spaceId = :spaceId', { spaceId: `${spaceId}` })
+          .leftJoinAndSelect('space.owner', 'owner')
+          .withDeleted()
+          .getOne();
+        return result ? result.owner.userId : 0;
+      }
+    
+      async selectMember(spaceId: number): Promise<any[]> {
+        const result = await this.createQueryBuilder('space')
+          .where('space.spaceId = :spaceId', { spaceId: `${spaceId}` })
+          .leftJoin('space.users', 'users')
+          .leftJoin('space.owner', 'owner')
+          .select(['users.userId as userId', 'owner.userId as ownerId'])
+          .getRawMany();
+        return result;
+      }
     
 }
