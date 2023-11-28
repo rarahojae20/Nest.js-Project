@@ -14,7 +14,7 @@ import { Space } from './space.entity';
 @Entity()
 export class Post {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
-  postIdx: number;
+  postId: number;
 
   @Column({ type: 'varchar', length: 50 })
   title: string;

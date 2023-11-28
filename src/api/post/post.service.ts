@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { SpaceRepository } from '../../api/space/space.repository';
 import { UserRepository } from '../../api/user/user.repository';
 import { PostRepository } from './post.repository';
+import { Post } from 'entity/post.enity';
 
 @Injectable()
 export class PostService {
@@ -66,9 +67,84 @@ export class PostService {
         },
         HttpStatus.NOT_FOUND,
       );
-    return result.spaceIdx;
+    return result.spaceId;
   }
 
+  async readPostDetail(postId: number): Promise<object> {
+    const post = await this.postRepository.selectPostDetail(postId);
+
+    if (!post)
+      throw new HttpException(
+        {
+          success: false,
+          message: '게시물을 찾을 수 없습니다.',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    return {
+      success: true,
+      message: '게시물 상세조회에 성공했습니다.',
+      result: post,
+    };
+  }
+
+  async updatePost(postId: number, post): Promise<object> {
+    const updateResult = await this.postRepository.update(postId, post);
+    if (updateResult.affected == 0)
+      throw new HttpException(
+        {
+          success: false,
+          message: '게시물을 찾을 수 없습니다.',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    return {
+      success: true,
+      message: '게시물이 수정되었습니다.',
+    };
+  }
+
+  async restorePost(postId: number): Promise<object> {
+    const restoreResult = await this.postRepository.restore({
+      postId: postId,
+    });
+    if (restoreResult.affected == 0)
+      throw new HttpException(
+        {
+          success: false,
+          message: '게시물을 찾을 수 없습니다.',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    else return { success: true, message: '게시물이 복구되었습니다.' };
+  }
+
+  async deletePost(postId: number): Promise<object> {
+    const deleteResult = await this.postRepository.softDelete({ postId });
+    if (deleteResult.affected == 0)
+      throw new HttpException(
+        {
+          success: false,
+          message: '게시물을 찾을 수 없습니다.',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    else return { success: true, message: '게시물이 삭제되었습니다.' };
+  }
+  async findWriterAndOwnerId(
+    postId: number,
+  ): Promise<{ writerId: number; ownerId: number }> {
+    const result = await this.postRepository.selectWriterAndOwnerId(postId);
+    if (!result || result.deletedAt)
+      throw new HttpException(
+        {
+          success: false,
+          message: '게시물 혹은 공간을 찾을 수 없습니다.',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    return result;
+  }
 
 
 

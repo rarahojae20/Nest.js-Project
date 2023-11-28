@@ -2,14 +2,18 @@ import { Post } from '../../entity/post.enity';
 import { EntityRepository, Repository } from 'typeorm';
 
 
+function parseColumn(column: Array<string>, prefix: string) {
+  return column.map((col) => prefix + col);
+}
+
 @EntityRepository(Post)
 export class PostRepository extends Repository<Post> {
-   
+  
     async selectAllPost(spaceId: number, keyword: string): Promise<object[]> {
         const result = await this.createQueryBuilder('post')
           .leftJoin('post.writer', 'writer')
           .leftJoin('post.space', 'space')
-          .where('space.spaceIdx = :spaceIdx', { spaceId: spaceId })
+          .where('space.spaceId = :spaceId', { spaceId: spaceId })
           .andWhere('post.title like :keyword', { keyword: `%${keyword}%` })
           .select([
             'post.postId as postId',
@@ -40,6 +44,50 @@ export class PostRepository extends Repository<Post> {
           .withDeleted()
           .getRawOne();
     
+        return result;
+      }
+    
+      async selectWriterAndOwnerId(postId: number): Promise<any> {
+        const result = await this.createQueryBuilder('post')
+          .where('post.postId = :postId', { postId: `${postId}` })
+          .leftJoin('post.space', 'space')
+          .select(['post.writer as writer', 'space.owner as owner'])
+          .withDeleted()
+          .getRawOne();
+        return result;
+      }
+    
+      async selectPostDetail(postId: number): Promise<Post> {
+        const result = await this.createQueryBuilder('post')
+          .leftJoin('post.writer', 'postWriter')
+          .leftJoin('post.chats', 'chat', 'chat.parent IS NULL')
+          .leftJoin('chat.writer', 'chatWriter')
+          .leftJoin('chat.rechat', 'rechat')
+          .leftJoin('rechat.writer', 'rechatWriter')
+          .where('post.postId = :postId', { postId: `${postId}` })
+          .select([
+            ...parseColumn(
+              ['postId', 'title', 'content', 'category', 'createdAt', 'updatedAt'],
+              'post.',
+            ),
+            ...parseColumn(
+              ['userId', 'email', 'firstName', 'lastName'],
+              'postWriter.',
+            ),
+            ...parseColumn(['chatId', 'content', 'createdAt'], 'chat.'),
+            ...parseColumn(['chatId', 'content', 'createdAt'], 'rechat.'),
+            ...parseColumn(
+              ['userId', 'firstName', 'lastName'],
+              'chatWriter.',
+            ),
+            ...parseColumn(
+              ['userId', 'firstName', 'lastName'],
+              'rechatWriter.',
+            ),
+          ])
+          .orderBy('chat.createdAt', 'DESC')
+          .addOrderBy('rechat.createdAt', 'DESC')
+          .getOne();
         return result;
       }
     
