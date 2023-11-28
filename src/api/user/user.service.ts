@@ -73,7 +73,6 @@ export class UserService {
 
   async getUser(userId): Promise<object> {
     const user = await this.userRepository.getUser(userId);
-    // Filter out email or sensitive data if needed
     return user;
   }
 }
