@@ -20,7 +20,7 @@ PATCH	/users/:userId/restore 유저 복구
 
 POST /spaces 공간 생성
 
-GET	/spaces?keyword=	전체 공간 조회
+GET	/spaces	전체 공간 조회
 
 POST /spaces/join 공간 연결
 
@@ -40,7 +40,7 @@ PATCH	/sapces/:sapceId/restore 공간 복구
 
 POST	/posts	게시글 생성 API
 
-GET	/posts?spaceId=&keyword=	게시글 조회
+GET	/posts?spaceId	게시글 조회
 
 GET	/posts/:postId	특정 게시글 조회 
 
