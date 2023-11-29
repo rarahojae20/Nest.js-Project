@@ -4,10 +4,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from '../../src/module/user.module';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
-import { SpaceModule } from './\bspace.module';
+import { SpaceModule } from './space.module';
 import { PostModule } from './post.module';
 import { AppController } from 'app.controller';
 import { AppService } from 'app.service';
+import { ChatModule } from './chat.module';
+import { AuthModule } from './auth.module';
 
 
 
@@ -36,8 +38,10 @@ import { AppService } from 'app.service';
       synchronize: process.env.DB_SYNC === 'true',
     }),
     UserModule,
+    AuthModule,
     SpaceModule,
-    PostModule
+    PostModule,
+    ChatModule
   ],
   controllers: [AppController],
   providers: [AppService],
