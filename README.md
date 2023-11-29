@@ -38,7 +38,7 @@ PATCH	/sapces/:sapceId/restore 공간 복구
 
 ------------------------
 
-POST	/posts	게시글 생성 API
+POST	/posts	게시글 생성
 
 GET	/posts?spaceId	게시글 조회
 
