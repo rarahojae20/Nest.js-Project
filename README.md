@@ -52,6 +52,13 @@ PATCH	/posts/:postId/restore 게시물 복구
 
 ------------------------
 
+POST	/chats 채팅 생성
+PATCH	/chats/:chatId 채팅 수정
+DELETE	/chats/:chatId 채팅 삭제 
+PATCH	/chats/:chatId/restore 채팅 복구
+
+------------------------
+
 CREATE TABLE User (
     userId INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(50) UNIQUE NOT NULL,
